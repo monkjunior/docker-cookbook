@@ -1,0 +1,25 @@
+version: "3.0"
+services:
+  mysqlwp:
+    container_name: mysqlwp
+    image: mysql:5
+    environment:
+      - MYSQL_ROOT_PASSWORD=${PASSWORD}
+      - MYSQL_DATABASE=${DATABASE}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${PASSWORD}
+    restart: always
+  wordpress:
+    container_name: wordpress
+    image: wordpress:latest
+    environment:
+      - WORDPRESS_DB_NAME=${DATABASE}
+      - WORDPRESS_DB_USER=${DB_USER}
+      - WORDPRESS_DB_PASSWORD=${PASSWORD}
+    ports:
+      - '80:80'
+    links:
+      - 'mysqlwp:mysql'
+    depends_on:
+      - 'mysqlwp'
+
