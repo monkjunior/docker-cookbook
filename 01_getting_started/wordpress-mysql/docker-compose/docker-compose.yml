@@ -9,6 +9,8 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${PASSWORD}
     restart: always
+    volumes:
+      - '${MYSQL_DATA_DIR}:/var/lib/mysql'
   wordpress:
     container_name: wordpress
     image: wordpress:latest
@@ -22,4 +24,5 @@ services:
       - 'mysqlwp:mysql'
     depends_on:
       - 'mysqlwp'
-
+volumes:
+  mysqlwp:
