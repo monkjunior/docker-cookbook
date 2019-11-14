@@ -28,3 +28,15 @@ services:
     #Mount source code
     volumes:
       - '${SOURCE_CODE_DIR}:/var/www/html'
+  phpMyAdmin:
+    container_name: phpMyAdmin
+    image: phpmyadmin/phpmyadmin
+    links:
+      - 'mysqlwp:mysql'
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysqlwp
+    depends_on:
+      - 'mysqlwp'
+    ports:
+      - '81:80'
