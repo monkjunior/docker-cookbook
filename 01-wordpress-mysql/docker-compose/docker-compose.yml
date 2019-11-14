@@ -9,6 +9,7 @@ services:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${PASSWORD}
     restart: always
+    #Mount database
     volumes:
       - '${MYSQL_DATA_DIR}:/var/lib/mysql'
   wordpress:
@@ -24,5 +25,6 @@ services:
       - 'mysqlwp:mysql'
     depends_on:
       - 'mysqlwp'
-volumes:
-  mysqlwp:
+    #Mount source code
+    volumes:
+      - '${SOURCE_CODE_DIR}:/var/www/html'
