@@ -1,0 +1,28 @@
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+
+  - eval $(ssh-agent -s)
+#  - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
+
+#  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+
+#  - mkdir -p ~/.ssh
+#  - chmod 700 ~/.ssh
+
+  - ssh-keyscan git.savvycom.vn >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+
+  - git config --global user.email "vungocson998@gmail.com"
+  - git config --global user.name "Son Vu"
+
+staging:
+  tags:
+  - develop
+  script:
+  - cd /home/dev/public_html/web-frontend
+  - git pull origin develop
+  - docker build -t angularbrick .
+  - docker rm -f brickinup_frontend
+  - docker run --name brickinup_frontend -d -p 8002:80 angularbrick
+  only:
+  - develop
