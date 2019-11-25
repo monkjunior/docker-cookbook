@@ -1,0 +1,67 @@
+version: '2'
+services:
+  frontend:
+    build:
+      context: ./nginx
+      dockerfile: web-frontend.dockerfile
+    container_name: ifp_frontend
+    working_dir: /var/www/html
+    volumes:
+      - ./frontend:/var/www/html
+    ports:
+      - 8086:80
+  publish:
+    build:
+      context: ./laravel
+      dockerfile: app-publish.dockerfile
+    container_name: ifp_publish
+    working_dir: /var/www
+    volumes:
+      - ./publish:/var/www
+  web-publish:
+    build:
+      context: ./nginx
+      dockerfile: web-publish.dockerfile
+    working_dir: /var/www
+    volumes_from:
+      - publish
+    ports:
+      - 8085:80
+
+  # The Application
+  backend:
+    build:
+      context: ./laravel
+      dockerfile: app-backend.dockerfile
+    container_name: ifp_backend
+    working_dir: /var/www
+    volumes:
+      - ./backend:/var/www
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+
+  # The Web Server
+  web-backend:
+    build:
+      context: ./nginx
+      dockerfile: web-backend.dockerfile
+    working_dir: /var/www
+    volumes_from:
+      - backend
+    ports:
+      - 8084:80
+
+  # The Database
+  database:
+    image: mysql:5.6
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      - "MYSQL_ROOT_PASSWORD=root"
+      - "MYSQL_DATABASE=ifp"
+    ports:
+        - "3311:3306"
+
+volumes:
+  dbdata:
