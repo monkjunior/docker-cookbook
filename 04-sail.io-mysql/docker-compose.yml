@@ -1,0 +1,28 @@
+version: "2"
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_PORT}:3306
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_use_native_aio=0
+    command: mysqld --sql_mode=""
+    container_name: ${MYSQL_CONTAINER_NAME}
+    volumes:
+      - ${MYSQL_DATA}:/var/lib/mysql
+  api:
+    build:
+      context: ${API_SERVICE}
+    volumes:
+      - ${API_APPLICATION}:/usr/src/app 
+    container_name: ${API_CONTAINER_NAME}
+    expose:
+      - 1337
+    ports:
+      - ${API_PORT}:1337
+    links: 
+      - db
