@@ -1,0 +1,34 @@
+version: '2'
+services:
+  wordpress:
+    build: .
+    container_name: wordpress_digitalworld
+    volumes:
+      - ./wordpress:/var/www/html
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:${MARIADB_VERSION}
+    container_name: mysql_digitalworld
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+  nginx:
+    image: nginx:${NGINX_VERSION}
+    container_name: nginx_digitalworld
+    ports:
+      - '8016:80'
+    volumes:
+      - ${NGINX_CONF_DIR}:/etc/nginx/conf.d
+      - ${NGINX_LOG_DIR}:/var/log/nginx
+      - ${WORDPRESS_DATA_DIR}:/var/www/html
+      - ${SSL_CERTS_DIR}:/etc/letsencrypt
+      - ${SSL_CERTS_DATA_DIR}:/data/letsencrypt
+    depends_on:
+      - wordpress
