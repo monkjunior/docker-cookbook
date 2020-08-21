@@ -1,0 +1,10 @@
+docker run --name fyb -p 3306:3306  -e MYSQL_ROOT_PASSWORD=Quyettam@15 \
+-e MYSQL_DATABASE=base_database \
+-e MYSQL_USER=quochuy \
+-e MYSQL_PASSWORD=Quyettam@15 \
+-d mysql:5
+_______________
+docker exec -it fyb bash
+_______________
+mysql -h 'localhost' -u 'quochuy' -D 'base_database' -p
+
